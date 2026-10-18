@@ -1,0 +1,731 @@
+#前端测试步骤：
+#在拓展商城中下载Live Server
+#右键index.html文件,open with Live Server
+#用浏览器打开文件
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>九塘笔记</title>
+  <style>
+    :root {
+      --ink: #1c1915;
+      --muted: #6b6258;
+      --line: #e4d9c8;
+      --paper: #f6f1e8;
+      --card: #fffdf8;
+      --accent: #b4532a;
+      --accent-dark: #8c3d1e;
+      --ok: #1f6b45;
+      --bad: #9b2c2c;
+      --shadow: 0 10px 30px rgba(60, 40, 20, 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Source Han Sans SC", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% 8%, #fff8ee 0, transparent 36%),
+        linear-gradient(180deg, #efe6d8 0%, var(--paper) 220px);
+      min-height: 100vh;
+    }
+    header {
+      padding: 28px 32px 8px;
+      max-width: 1180px;
+      margin: 0 auto;
+    }
+    h1 {
+      margin: 0 0 6px;
+      font-size: 28px;
+      letter-spacing: 0.04em;
+      font-weight: 700;
+    }
+    .sub { color: var(--muted); margin: 0 0 16px; line-height: 1.6; }
+    .bar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 12px;
+      box-shadow: var(--shadow);
+    }
+    label { font-size: 13px; color: var(--muted); }
+    input, textarea, button {
+      font: inherit;
+      color: inherit;
+    }
+    input, textarea {
+      border: 1px solid var(--line);
+      background: #fff;
+      border-radius: 10px;
+      padding: 10px 12px;
+      outline: none;
+    }
+    input:focus, textarea:focus { border-color: #c9845a; }
+    button {
+      border: 0;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 10px;
+      padding: 10px 14px;
+      cursor: pointer;
+    }
+    button:hover { background: var(--accent-dark); }
+    button.ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    button.ghost:hover { background: #f3eadf; }
+    button.danger { background: #8f3030; }
+    .status {
+      font-size: 13px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f3eadf;
+    }
+    .status.on { color: var(--ok); }
+    .status.off { color: var(--bad); }
+    main {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 18px 32px 48px;
+      display: grid;
+      grid-template-columns: 220px 1fr 320px;
+      gap: 16px;
+    }
+    nav, section, aside {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+    }
+    nav { padding: 12px; height: fit-content; position: sticky; top: 12px; }
+    nav button {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 8px;
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid transparent;
+    }
+    nav button.active {
+      background: #fff4ea;
+      border-color: #efd3c0;
+      color: var(--accent-dark);
+    }
+    section { padding: 20px 22px 24px; min-height: 520px; }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    h2 { margin: 0 0 6px; font-size: 20px; }
+    p.hint { margin: 0 0 16px; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .grid { display: grid; gap: 10px; }
+    .row { display: flex; gap: 10px; flex-wrap: wrap; }
+    .row > * { flex: 1; min-width: 160px; }
+    textarea { min-height: 110px; resize: vertical; width: 100%; }
+    .token-box {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      word-break: break-all;
+      background: #f7f1e8;
+      border-radius: 10px;
+      padding: 10px;
+      margin: 8px 0 14px;
+    }
+    aside { padding: 16px; }
+    aside h3 { margin: 0 0 8px; font-size: 15px; }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-word;
+      font-size: 12px;
+      line-height: 1.5;
+      background: #1c1915;
+      color: #f6efe4;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 180px;
+      max-height: 420px;
+      overflow: auto;
+    }
+    .api-list { font-size: 13px; color: var(--muted); line-height: 1.7; padding-left: 18px; }
+    .chat-log {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      min-height: 280px;
+      max-height: 420px;
+      overflow: auto;
+      padding: 12px;
+      background: #fffaf3;
+      margin-bottom: 12px;
+    }
+    .bubble {
+      margin: 0 0 10px;
+      padding: 10px 12px;
+      border-radius: 12px;
+      max-width: 92%;
+      line-height: 1.55;
+      white-space: pre-wrap;
+    }
+    .bubble.user { background: #f3e2d4; margin-left: auto; }
+    .bubble.ai { background: #fff; border: 1px solid var(--line); }
+    .meta { font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .choices {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .choice {
+      text-align: left;
+      background: #fffaf3;
+      color: var(--ink);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      min-height: 96px;
+    }
+    .choice:hover { background: #fff4ea; }
+    .choice strong { display: block; margin-bottom: 6px; font-size: 16px; }
+    .choice span { color: var(--muted); font-size: 13px; }
+    .account {
+      background: #fffaf3;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      margin-bottom: 14px;
+      line-height: 1.8;
+    }
+    .linkish {
+      background: none;
+      border: 0;
+      color: var(--accent);
+      padding: 0;
+      width: fit-content;
+      justify-self: start;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+    .linkish:hover { background: none; color: var(--accent-dark); }
+    .back { margin-bottom: 14px; }
+    .result-list { display: grid; gap: 10px; margin-top: 14px; }
+    .note-card {
+      background: #fffaf3;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+    .note-card .id { color: var(--accent-dark); font-weight: 700; }
+    @media (max-width: 980px) {
+      main { grid-template-columns: 1fr; padding: 12px; }
+      header { padding: 18px 12px 0; }
+      nav { position: static; display: flex; gap: 8px; overflow: auto; }
+      nav button { width: auto; margin: 0; white-space: nowrap; }
+      .choices { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>九塘笔记</h1>
+    <p class="sub">对接 FastAPI 服务。新增、修改、删除笔记会写入 RabbitMQ，由 <code>notes-zhixing.py</code> 消费者异步写入 MySQL。查询走 Redis 缓存。</p>
+    <div class="bar">
+      <label for="base">后端地址</label>
+      <input id="base" value="http://127.0.0.1:8000" style="min-width:260px" />
+      <button type="button" id="ping">检测连接</button>
+      <span id="conn" class="status off">未检测</span>
+      <span id="who" class="status">未登录</span>
+    </div>
+  </header>
+  <main>
+    <nav>
+      <button type="button" class="active" data-tab="user">用户</button>
+      <button type="button" data-tab="note">笔记</button>
+      <button type="button" data-tab="chat">AI 对话</button>
+      <button type="button" data-tab="about">接口说明</button>
+    </nav>
+    <section>
+      <div class="panel active" id="panel-user">
+        <div id="view-register">
+          <h2>注册</h2>
+          <p class="hint">POST /user/register。填写账号和密码后注册。</p>
+          <div class="grid">
+            <input id="regUser" placeholder="账号" />
+            <input id="regPass" type="password" placeholder="密码" />
+            <button type="button" id="register">注册</button>
+            <button type="button" class="linkish" id="toLogin">已注册，要登录</button>
+          </div>
+        </div>
+        <div id="view-login" hidden>
+          <h2>登录</h2>
+          <p class="hint">POST /user/login。登录成功后保存 token，写笔记时会带上它。</p>
+          <div class="grid">
+            <input id="loginUser" placeholder="账号" />
+            <input id="loginPass" type="password" placeholder="密码" />
+            <button type="button" id="login">登录</button>
+            <button type="button" class="linkish" id="toRegister">返回注册</button>
+          </div>
+        </div>
+        <div id="view-account" hidden>
+          <h2>当前账号</h2>
+          <div class="account">
+            <div>账号：<strong id="showUser"></strong></div>
+            <div>密码：<strong id="showPass"></strong></div>
+          </div>
+          <div class="token-box" id="tokenView">当前没有 token</div>
+          <button type="button" class="ghost" id="logout">退出登录</button>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-note">
+        <div id="note-menu">
+          <h2>选择笔记接口</h2>
+          <p class="hint">先选择要使用的接口，再进入对应页面。写入接口只提交任务，请先启动消费者，稍后再用 id 查询。</p>
+          <div class="choices">
+            <button type="button" class="choice" data-note="add">
+              <strong>新增笔记</strong>
+              <span>POST /note/add</span>
+            </button>
+            <button type="button" class="choice" data-note="read">
+              <strong>查询笔记</strong>
+              <span>GET /note/read/{id}</span>
+            </button>
+            <button type="button" class="choice" data-note="update">
+              <strong>修改笔记</strong>
+              <span>PUT /note/update/{id}</span>
+            </button>
+            <button type="button" class="choice" data-note="delete">
+              <strong>删除笔记</strong>
+              <span>DELETE /note/delete/{id}</span>
+            </button>
+          </div>
+        </div>
+        <div id="note-add" hidden>
+          <button type="button" class="ghost back" data-note-back>返回接口选择</button>
+          <h2>新增笔记</h2>
+          <p class="hint">POST /note/add。需要登录。任务进入队列后异步保存，接口不返回新 id。</p>
+          <div class="grid">
+            <input id="addTitle" placeholder="标题" />
+            <textarea id="addContent" placeholder="正文"></textarea>
+            <button type="button" id="addNote">提交新增</button>
+          </div>
+        </div>
+        <div id="note-read" hidden>
+          <button type="button" class="ghost back" data-note-back>返回接口选择</button>
+          <h2>查询笔记</h2>
+          <p class="hint">输入账号名字，会列出该账号全部笔记，并用笔记 id 调用 GET /note/read/{id} 显示。输入笔记 title，会直接按匹配到的笔记 id 显示内容。已登录时，点「查询自己笔记」可直接列出当前账号新增的全部笔记。</p>
+          <div class="grid">
+            <input id="readKeyword" placeholder="账号名字或笔记title" />
+            <div class="row">
+              <button type="button" id="readNote">查询</button>
+              <button type="button" class="ghost" id="readMine">查询自己笔记</button>
+            </div>
+          </div>
+          <div class="result-list" id="readResult"></div>
+        </div>
+        <div id="note-update" hidden>
+          <button type="button" class="ghost back" data-note-back>返回接口选择</button>
+          <h2>修改笔记</h2>
+          <p class="hint">PUT /note/update/{note_id}。需要登录，只能改自己的笔记。</p>
+          <div class="grid">
+            <input id="updateId" placeholder="笔记 id" />
+            <input id="updateTitle" placeholder="新标题" />
+            <textarea id="updateContent" placeholder="新正文"></textarea>
+            <button type="button" id="updateNote">提交修改</button>
+          </div>
+        </div>
+        <div id="note-delete" hidden>
+          <button type="button" class="ghost back" data-note-back>返回接口选择</button>
+          <h2>删除笔记</h2>
+          <p class="hint">DELETE /note/delete/{note_id}。需要登录，只能删自己的笔记。</p>
+          <div class="grid">
+            <input id="deleteId" placeholder="笔记 id" />
+            <button type="button" class="danger" id="deleteNote">确认删除</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-chat">
+        <h2>与 AI 聊天</h2>
+        <p class="hint">POST /chat。同一 session_id 会带上历史。问「查询笔记 id 为 1 的内容」时，后端会调用工具 query_note_by_id。</p>
+        <div class="row" style="margin-bottom:10px">
+          <input id="sessionId" />
+          <button type="button" class="ghost" id="newSession">新会话</button>
+        </div>
+        <div class="chat-log" id="chatLog"></div>
+        <div class="grid">
+          <textarea id="question" placeholder="输入问题，例如：帮我查询笔记 id 为 1 的标题和正文"></textarea>
+          <button type="button" id="sendChat">发送</button>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-about">
+        <h2>接口与后台任务</h2>
+        <p class="hint">文档地址：<a id="docsLink" href="http://127.0.0.1:8000/docs" target="_blank" rel="noreferrer">http://127.0.0.1:8000/docs</a></p>
+        <ul class="api-list">
+          <li>POST /user/register　参数 username、password</li>
+          <li>POST /user/login　参数 username、password，返回 token</li>
+          <li>POST /note/add　参数 title、content、token，消息入队 action=add</li>
+          <li>GET /note/find　参数 keyword，按账号名或笔记 title 返回笔记 id</li>
+          <li>GET /note/read/{note_id}　先读 Redis，没有再查 MySQL 并加锁</li>
+          <li>PUT /note/update/{note_id}　参数 title、content、token，入队后删除该笔记缓存</li>
+          <li>DELETE /note/delete/{note_id}　参数 token，入队后删除该笔记缓存</li>
+          <li>POST /chat　参数 question、session_id，可触发工具 query_note_by_id</li>
+        </ul>
+        <p class="hint">消费者 notes-zhixing.py 监听队列 note_task_queue。它按 msg_id 做幂等，然后执行新增、修改或删除，并写入 msg_record。前端没有单独的消费者接口，写操作成功只表示消息已提交。</p>
+      </div>
+    </section>
+    <aside>
+      <h3>最近一次响应</h3>
+      <pre id="out">等待请求…</pre>
+    </aside>
+  </main>
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const TOKEN_KEY = "jotang_token";
+    const USER_KEY = "jotang_user";
+    const PASS_KEY = "jotang_pass";
+    const SESSION_KEY = "jotang_session";
+
+    function baseUrl() {
+      return $("base").value.trim().replace(/\/$/, "");
+    }
+
+    function show(data, ok) {
+      const text = typeof data === "string" ? data : JSON.stringify(data, null, 2);
+      $("out").textContent = text;
+      $("conn").textContent = ok ? "请求完成" : "请求失败";
+      $("conn").className = "status " + (ok ? "on" : "off");
+    }
+
+    function showAuth(name) {
+      $("view-register").hidden = name !== "register";
+      $("view-login").hidden = name !== "login";
+      $("view-account").hidden = name !== "account";
+    }
+
+    function paintAuth() {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const user = localStorage.getItem(USER_KEY) || "";
+      const pass = localStorage.getItem(PASS_KEY) || "";
+      if (token) {
+        $("showUser").textContent = user || "（本次登录未记录账号）";
+        $("showPass").textContent = pass || "（本次登录未记录密码）";
+        $("tokenView").textContent = token;
+        $("who").textContent = user ? "已登录：" + user : "已登录";
+        $("who").className = "status on";
+        showAuth("account");
+      } else {
+        $("who").textContent = "未登录";
+        $("who").className = "status off";
+        showAuth("register");
+      }
+    }
+
+    function showNote(name) {
+      ["menu", "add", "read", "update", "delete"].forEach((key) => {
+        $("note-" + key).hidden = key !== name;
+      });
+    }
+
+    async function callApi(path, options) {
+      const url = baseUrl() + path;
+      const res = await fetch(url, options);
+      let body;
+      const raw = await res.text();
+      try { body = raw ? JSON.parse(raw) : {}; }
+      catch { body = { raw }; }
+      if (!res.ok) {
+        const detail = body && body.detail ? body.detail : body;
+        throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
+      }
+      return body;
+    }
+
+    function query(params) {
+      const usp = new URLSearchParams();
+      Object.entries(params).forEach(([k, v]) => {
+        if (v !== undefined && v !== null) usp.set(k, String(v));
+      });
+      return usp.toString();
+    }
+
+    function requireToken() {
+      const token = localStorage.getItem(TOKEN_KEY);
+      if (!token) throw new Error("请先登录");
+      return token;
+    }
+
+    document.querySelectorAll("nav button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll("nav button").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".panel").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        $("panel-" + btn.dataset.tab).classList.add("active");
+      });
+    });
+
+    $("base").addEventListener("change", () => {
+      $("docsLink").href = baseUrl() + "/docs";
+      $("docsLink").textContent = baseUrl() + "/docs";
+    });
+
+    $("ping").addEventListener("click", async () => {
+      try {
+        const data = await callApi("/openapi.json");
+        const paths = Object.keys(data.paths || {});
+        show({ ok: true, title: data.info && data.info.title, paths }, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    $("toLogin").addEventListener("click", () => showAuth("login"));
+    $("toRegister").addEventListener("click", () => showAuth("register"));
+
+    $("register").addEventListener("click", async () => {
+      try {
+        const data = await callApi("/user/register?" + query({
+          username: $("regUser").value.trim(),
+          password: $("regPass").value
+        }), { method: "POST" });
+        show(data, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    $("login").addEventListener("click", async () => {
+      try {
+        const username = $("loginUser").value.trim();
+        const password = $("loginPass").value;
+        const data = await callApi("/user/login?" + query({
+          username,
+          password
+        }), { method: "POST" });
+        if (data.token) localStorage.setItem(TOKEN_KEY, data.token);
+        localStorage.setItem(USER_KEY, username);
+        localStorage.setItem(PASS_KEY, password);
+        paintAuth();
+        show(data, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    $("logout").addEventListener("click", () => {
+      localStorage.removeItem(TOKEN_KEY);
+      localStorage.removeItem(USER_KEY);
+      localStorage.removeItem(PASS_KEY);
+      paintAuth();
+      show({ msg: "已退出登录，本地 token 已清除。服务端内存里的 token 仍有效，直到后端重启。" }, true);
+    });
+
+    document.querySelectorAll("[data-note]").forEach((btn) => {
+      btn.addEventListener("click", () => showNote(btn.dataset.note));
+    });
+    document.querySelectorAll("[data-note-back]").forEach((btn) => {
+      btn.addEventListener("click", () => showNote("menu"));
+    });
+
+    $("addNote").addEventListener("click", async () => {
+      try {
+        const data = await callApi("/note/add?" + query({
+          title: $("addTitle").value,
+          content: $("addContent").value,
+          token: requireToken()
+        }), { method: "POST" });
+        show(data, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    function renderNoteCard(note) {
+      const card = document.createElement("div");
+      card.className = "note-card";
+      const idLine = document.createElement("div");
+      idLine.className = "id";
+      idLine.textContent = "笔记 id：" + note.id;
+      const titleLine = document.createElement("div");
+      titleLine.textContent = "标题：" + (note.title || "");
+      const contentLine = document.createElement("div");
+      contentLine.textContent = "正文：" + (note.content || "");
+      card.append(idLine, titleLine, contentLine);
+      return card;
+    }
+
+    async function loadNotesByIds(ids) {
+      const notes = [];
+      for (const id of ids) {
+        const data = await callApi("/note/read/" + encodeURIComponent(id));
+        notes.push(data && data.id ? data : { id, title: "", content: data && data.msg ? data.msg : "笔记不存在" });
+      }
+      return notes;
+    }
+
+    $("readNote").addEventListener("click", async () => {
+      const box = $("readResult");
+      box.innerHTML = "";
+      try {
+        const keyword = $("readKeyword").value.trim();
+        if (!keyword) throw new Error("请输入账号名字或笔记title");
+        const found = await callApi("/note/find?" + query({ keyword }));
+        const accountIds = found.account_note_ids || [];
+        const titleIds = found.title_note_ids || [];
+        if (!accountIds.length && !titleIds.length) {
+          throw new Error(found.user_found ? "该账号还没有笔记" : "没有找到该账号或标题对应的笔记");
+        }
+        const shown = [];
+        if (accountIds.length) {
+          const head = document.createElement("div");
+          head.className = "hint";
+          head.textContent = "账号「" + keyword + "」的笔记，共 " + accountIds.length + " 条";
+          box.append(head);
+          const notes = await loadNotesByIds(accountIds);
+          notes.forEach((note) => box.append(renderNoteCard(note)));
+          shown.push(...notes);
+        }
+        const extraTitleIds = titleIds.filter((id) => !accountIds.includes(id));
+        if (titleIds.length && !accountIds.length) {
+          const head = document.createElement("div");
+          head.className = "hint";
+          head.textContent = "标题「" + keyword + "」匹配到 " + titleIds.length + " 条笔记";
+          box.append(head);
+          const notes = await loadNotesByIds(titleIds);
+          notes.forEach((note) => box.append(renderNoteCard(note)));
+          shown.push(...notes);
+        } else if (extraTitleIds.length) {
+          const head = document.createElement("div");
+          head.className = "hint";
+          head.textContent = "同名标题另外匹配到 " + extraTitleIds.length + " 条笔记";
+          box.append(head);
+          const notes = await loadNotesByIds(extraTitleIds);
+          notes.forEach((note) => box.append(renderNoteCard(note)));
+          shown.push(...notes);
+        }
+        show({ keyword, account_note_ids: accountIds, title_note_ids: titleIds, notes: shown }, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    $("readMine").addEventListener("click", async () => {
+      const box = $("readResult");
+      box.innerHTML = "";
+      try {
+        requireToken();
+        const username = localStorage.getItem(USER_KEY);
+        if (!username) throw new Error("请先登录后再查询自己的笔记");
+        const found = await callApi("/note/find?" + query({ keyword: username }));
+        const accountIds = found.account_note_ids || [];
+        if (!accountIds.length) throw new Error("你还没有笔记");
+        const head = document.createElement("div");
+        head.className = "hint";
+        head.textContent = "账号「" + username + "」新增的笔记，共 " + accountIds.length + " 条";
+        box.append(head);
+        const notes = await loadNotesByIds(accountIds);
+        notes.forEach((note) => box.append(renderNoteCard(note)));
+        show({ username, account_note_ids: accountIds, notes }, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    $("updateNote").addEventListener("click", async () => {
+      try {
+        const id = $("updateId").value.trim();
+        if (!id) throw new Error("请填写笔记 id");
+        const data = await callApi("/note/update/" + encodeURIComponent(id) + "?" + query({
+          title: $("updateTitle").value,
+          content: $("updateContent").value,
+          token: requireToken()
+        }), { method: "PUT" });
+        show(data, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    $("deleteNote").addEventListener("click", async () => {
+      try {
+        const id = $("deleteId").value.trim();
+        if (!id) throw new Error("请填写笔记 id");
+        if (!confirm("确认删除笔记 " + id + " ？")) return;
+        const data = await callApi("/note/delete/" + encodeURIComponent(id) + "?" + query({
+          token: requireToken()
+        }), { method: "DELETE" });
+        show(data, true);
+      } catch (err) {
+        show(String(err.message || err), false);
+      }
+    });
+
+    function ensureSession() {
+      let sid = localStorage.getItem(SESSION_KEY);
+      if (!sid) {
+        sid = crypto.randomUUID();
+        localStorage.setItem(SESSION_KEY, sid);
+      }
+      $("sessionId").value = sid;
+      return sid;
+    }
+
+    function addBubble(role, text) {
+      const box = document.createElement("div");
+      box.className = "bubble " + (role === "user" ? "user" : "ai");
+      const meta = document.createElement("div");
+      meta.className = "meta";
+      meta.textContent = role === "user" ? "我" : "AI";
+      const body = document.createElement("div");
+      body.textContent = text;
+      box.append(meta, body);
+      $("chatLog").append(box);
+      $("chatLog").scrollTop = $("chatLog").scrollHeight;
+    }
+
+    $("newSession").addEventListener("click", () => {
+      const sid = crypto.randomUUID();
+      localStorage.setItem(SESSION_KEY, sid);
+      $("sessionId").value = sid;
+      $("chatLog").innerHTML = "";
+      show({ session_id: sid, msg: "已开始新会话。后端按 session_id 保存历史，旧会话仍留在服务内存里。" }, true);
+    });
+
+    $("sessionId").addEventListener("change", () => {
+      const sid = $("sessionId").value.trim();
+      if (sid) localStorage.setItem(SESSION_KEY, sid);
+    });
+
+    $("sendChat").addEventListener("click", async () => {
+      const question = $("question").value.trim();
+      const sessionId = $("sessionId").value.trim() || ensureSession();
+      if (!question) return;
+      addBubble("user", question);
+      $("question").value = "";
+      try {
+        const data = await callApi("/chat?" + query({
+          question,
+          session_id: sessionId
+        }), { method: "POST" });
+        addBubble("ai", data.ai_reply || JSON.stringify(data));
+        show(data, true);
+      } catch (err) {
+        addBubble("ai", String(err.message || err));
+        show(String(err.message || err), false);
+      }
+    });
+
+    paintAuth();
+    ensureSession();
+    $("docsLink").href = baseUrl() + "/docs";
+  </script>
+</body>
+</html>
